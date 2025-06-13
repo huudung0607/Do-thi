@@ -14,7 +14,7 @@
 #include <stack>
 #include <unordered_map>
 using namespace std;
-vector<int> ke[1001];
+vector<int> canh[1001];
 int main()
 {
 	int n;
@@ -26,12 +26,12 @@ int main()
 		stringstream ss(s);
 		int x;
 		while (ss >> x) {
-			ke[i].push_back(x);
+			canh[i].push_back(x);
 		}
 	}
 	vector<pair<int, int>> v;
 	for (int i = 1; i <= n; i++) {
-		for (auto x : ke[i]) {
+		for (auto x : canh[i]) {
 			if (i < x) v.push_back({ i,x });
 		}
 	}
