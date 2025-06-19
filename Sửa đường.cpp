@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include <algorithm>
 #include <vector>
@@ -54,7 +53,7 @@ void nhap() {
 	cin >> n >> m;
 	for (int i = 0; i < m; i++) {
 		int x, y, w; cin >> x >> y >> w;
-		ke[y].push_back({ x,w });
+		ke[x].push_back({ y,w });
 		ke[y].push_back({ x,w });
 		dscanh.push_back({ x,y,w });
 	}
@@ -86,4 +85,3 @@ int main()
 	init();
 	Kruskal();
 }
-
