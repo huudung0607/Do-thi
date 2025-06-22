@@ -23,7 +23,7 @@ void nhap() {
 	for (int i = 0; i < m; i++) {
 		int x, y; cin >> x >> y;
 		ke[x].push_back(y);
-		ke[y].push_back(x);
+		//ke[y].push_back(x);
 	}
 }
 
