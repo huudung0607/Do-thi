@@ -21,6 +21,8 @@ void nhap() {
 	for (int i = 1; i <= 100; i++) {
 		for (int j = 1; j <= 100; j++) {
 			if (i == j) dics[i][j] = 0;
+				//i == j thì dics[i][j] = 0 do khoảng cách từ nó đến nó là 0
+// ví dụ dics[1][1] là khoảng cách từ 1 -> 1 là 0
 			else dics[i][j] = 1e9;
 		}
 	}
@@ -30,6 +32,7 @@ void nhap() {
 		ke[x].push_back({ y,w });
 		ke[y].push_back({ x,w });
 		dics[x][y] = dics[y][x] = w;
+		// khoảng cách từ x -> y cũng là khoảng cách từ y -> x trong đồ  thị vô hướng
 	}
 }
 void Floyd_Warshall() {
