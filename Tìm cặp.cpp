@@ -27,11 +27,18 @@ void nhap() {
 	}
 }
 
-void dfs(int u, int parent) {
-	for (int v : ke[u]) {
-		if (v != parent) {
+void dfs(int u, int parent) { //int u,int parent : Parent la cha cua u
+	for (int v : ke[u]) { //duyet ds ke
+		if (v != parent) { //tranh di nguoc lai cha
 			d[v] = d[u] + 1;
-			dfs(v, u);
+			//  1 (0)
+			//	|
+			//	|
+			//	|--> 2 (1) //v != parent de tranh di nguoc lai
+			//		 |            vd : 1 la cha cua 2 nen phai v != parent de 2 tranh di nguoc len 1
+			//		 |
+			//		  --> 3 (2)
+			dfs(v, u); //goi dfs voi u la cha cua v
 		}
 	}
 }
@@ -44,6 +51,14 @@ int main()
 	int ans = 0;
 	for (int i = 1; i <= n; i++) {
 		ans += d[i] + 1;
+		//  1 (0)
+		//	|
+		//	|
+		//	|--> 2 (1) 
+		//		 |           
+		//		 |
+		//		  --> 3 (2)
+		// ans += 0 + 1 + 2,...
 	}
 	cout << ans;
 }
