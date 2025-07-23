@@ -13,84 +13,71 @@
 #include <queue>
 #include <stack>
 #include <unordered_map>
+#include <cstring>
 using namespace std;
-int n, m, s, t, u, v;
-char a[505][505];
-int visited[505][505][4];
 
-int dx[4] = { -1,0,0,1 };
-int dy[4] = { 0,-1,1,0 };
+int dx[4] = { -1, 1, 0, 0 }; 
+int dy[4] = { 0, 0, -1, 1 };
+
+int n, m;
+char S[505][505];
+bool visited[505][505][4][3]; 
 
 struct State {
-	int x, y;
-	int direct;
-	int dircnt;
+    int x, y, dir, turns;
 };
-bool bfs(int i, int j) {
-	queue<State> q;
-	// int1,int 2 : tọa độ i,j
-	// int3 : hướng di chuyển
-	// int 4 : số lần di chuyển theo hướng đó
-	for (int k = 0; k < 4; k++) {
-		int i1 = i + dx[k];
-		int j1 = j + dy[k];
-		if (i1 >= 0 && j1 >= 0 && i1 < n && j1 <m
-			&& (a[i1][j1] == '.' || a[i1][j1] == 'T')) {
-			q.push({ i1,j1,k,0 });
-			/*Dòng này là bước khởi đầu, bạn đang đứng ở vị trí S.
-			Từ đó bắt đầu đi theo 4 hướng:
-			Lúc này, chưa đi qua hướng nào trước đó ⇒ chưa rẽ lần nào cả.
-			➡️ Vì vậy, int4 = 0
-			Đây là hướng đầu tiên được chọn, không phải là một "đổi hướng"
-			từ một hướng nào trước đó.*/
-			visited[i1][j1][k] = 1;
-			//đánh dấu i1,j1 theo hướng của k đã đi, nghĩa là
-			//đã đi theo hướng k 1 lần (k : trái,phải,trên,dưới)
-		}
-	}
-	while (!q.empty()) {
-		State idk = q.front();
-		q.pop();
-		if (idk.x == u && idk.y == v && idk.dircnt <= 2) {
-			return true;
-		}
-		for (int k = 0; k < 4; k++) {
-			int i1 = idk.x + dx[k];
-			int j1 = idk.y + dy[k];
-			int newcnt = idk.dircnt + (k != idk.direct);
-			//đi theo 4 hướng theo index của dx,dy
-			//0,1,2,3 : lên, xuống, trái, phải
-			// nếu k là hướng sẽ đi khác với hướng đi đã đi là
-			// idx.direct thì sẽ tăng hướng đi mới newcnt lên
-			// và idx.dircnt : số lần đã đổi hướng hiện tại
-			// vd  k = 1 : đi xuống có idk.dircnt = 2 thì đã đi xuống 2 lần
-			if (i1 >= 0 && j1 >= 0 && i1 < n && j1 < m
-				&& (a[i1][j1] == '.' || a[i1][j1] == 'T') && newcnt <= 2
-				&& !visited[i1][j1][k]) {
-				q.push({ i1,j1,k,newcnt });
-				visited[i1][j1][k] = 1;
-			}
-		}
-	}
-	return false;
-}
-int main()
-{
-	cin >> n >> m;
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < m; j++) {
-			cin >> a[i][j];
-			if (a[i][j] == 'T') {
-				u = i;
-				v = j;
-			}
-			if (a[i][j] == 'S') {
-				s = i;
-				t = j;
-			}
-		}
-	}
-	if (bfs(s, t)) cout << "YES";
-	else cout << "NO";
+
+bool isValid(int x, int y) {
+    return x >= 0 && x < n && y >= 0 && y < m && S[x][y] != '*';
 }
 
+bool bfs(int start_x, int start_y, int target_x, int target_y) {
+    queue<State> q;
+    memset(visited, false, sizeof(visited));
+    for (int dir = 0; dir < 4; dir++) {
+        q.push({ start_x, start_y, dir, 0 });
+        visited[start_x][start_y][dir][0] = true;
+    }
+    while (!q.empty()) {
+        State cur = q.front();
+        q.pop();
+        int x = cur.x, y = cur.y, dir = cur.dir, turns = cur.turns;
+        if (S[x][y] == 'T' && turns <= 2) {
+            return true;
+        }
+        for (int new_dir = 0; new_dir < 4; new_dir++) {
+            int new_x = x + dx[new_dir];
+            int new_y = y + dy[new_dir];
+            int new_turns = turns + (dir != new_dir);
+            if (new_turns <= 2 && isValid(new_x, new_y) && !visited[new_x][new_y][new_dir][new_turns]) {
+                visited[new_x][new_y][new_dir][new_turns] = true;
+                q.push({ new_x, new_y, new_dir, new_turns });
+            }
+        }
+    }
+    return false;
+}
+
+int main() {
+    cin >> n >> m;
+    int start_x, start_y, target_x, target_y;
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            cin >> S[i][j];
+            if (S[i][j] == 'S') {
+                start_x = i;
+                start_y = j;
+            }
+            if (S[i][j] == 'T') {
+                target_x = i;
+                target_y = j;
+            }
+        }
+    }
+    if (bfs(start_x, start_y, target_x, target_y)) {
+        cout << "YES";
+    }
+    else {
+        cout << "NO";
+    }
+}
